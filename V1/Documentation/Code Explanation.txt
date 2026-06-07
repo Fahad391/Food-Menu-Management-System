@@ -1,0 +1,165 @@
+                                                                          Code Explanation
+
+## 1. Main.py
+
+This file is the starting point of the application. Its job is simple: create the main window and start the program.
+
+```
+from GUI import *
+
+app = Inventory()
+app.mainloop()
+```
+
+### How it works
+
+* `from GUI import *` imports the GUI components, including the `Inventory` class.
+* `app = Inventory()` creates an instance of the main application window.
+* `app.mainloop()` starts Tkinter's event loop, allowing the program to respond to user actions such as button clicks and text input.
+
+---
+
+## 2. GUI.py
+
+This file contains the graphical user interface (GUI) of the application. It is responsible for displaying the window, collecting user input, and communicating with the backend functions.
+
+```
+import customtkinter as gui
+from Inventory_Management import add_dish, view_menu
+
+gui.set_appearance_mode("Dark")
+gui.set_default_color_theme("blue")
+```
+
+### Theme Setup
+
+The application uses CustomTkinter with a dark theme and a blue color scheme to provide a modern look.
+
+### Main Window
+
+```
+class Inventory(gui.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("Food Menu Management System")
+        self.geometry("600x600")
+        self.resizable(False, False)
+```
+
+The `Inventory` class represents the main application window. It sets the window title, size, and prevents resizing to keep the layout consistent.
+
+### Input Section
+
+The input section allows users to enter a dish name and its price.
+
+```
+self.name_entry = gui.CTkEntry(self.input_frame, width=250)
+self.price_entry = gui.CTkEntry(self.input_frame, width=250)
+```
+
+These fields collect the information that will later be saved to the menu file.
+
+### Buttons
+
+```
+self.add_button = gui.CTkButton(
+    self,
+    text="Add Item to Menu",
+    command=self.handle_add_dish
+)
+```
+
+The buttons trigger specific actions:
+
+* **Add Item to Menu** → saves a new menu item.
+* **Refresh / View Menu** → displays the current menu.
+
+### Status and Display Area
+
+The application includes:
+
+* A status label to show success or error messages.
+* A text box that displays all menu items.
+
+When the application starts, the menu is automatically loaded so the user can immediately see existing entries.
+
+### `handle_add_dish()`
+
+```
+def handle_add_dish(self):
+```
+
+This method:
+
+1. Reads the dish name and price entered by the user.
+2. Sends the data to the backend function `add_dish()`.
+3. Clears the input fields if the operation succeeds.
+4. Updates the menu display.
+5. Shows an error message if the input is invalid.
+
+### `handle_view_menu()`
+
+```
+def handle_view_menu(self):
+```
+
+This method retrieves the latest menu data from the backend and updates the text box. The text box is temporarily unlocked so new content can be inserted, then locked again to prevent accidental editing.
+
+---
+
+## 3. Inventory_Management.py
+
+This file contains the backend logic of the application. It handles validation, file operations, and menu storage.
+
+## `add_dish()`
+
+```
+def add_dish(dish_name, dish_price):
+```
+
+This function adds a new menu item to the file.
+
+Steps performed:
+
+1. Checks if the dish name is empty.
+2. Converts the price into a number.
+3. Raises an error if the price is invalid.
+4. Opens `Menu.txt` in append mode.
+5. Writes the new dish information to the file.
+
+Example output stored in the file:
+
+```text
+Dish: Kolija Shingara  Price: 20.0 BDT
+```
+
+### `view_menu()`
+
+```
+def view_menu():
+    try:
+        with open("Menu.txt", 'r') as menu:
+            items = menu.read()
+            return items if items.strip() else "Menu is empty"
+    except FileNotFoundError:
+        return "File not found."
+```
+
+This function reads all menu items from `Menu.txt`.
+
+* If the file contains data, it returns the contents.
+* If the file is empty, it returns `"Menu is empty"`.
+* If the file does not exist, it returns `"File not found."` instead of crashing the program.
+
+---
+
+## Overall Architecture
+
+The project follows a simple three-layer structure:
+
+1. **Main.py** – Starts the application.
+2. **GUI.py** – Handles user interaction and display.
+3. **Inventory_Management.py** – Manages validation and file storage.
+
+This separation makes the code easier to maintain, debug, and expand in future versions.

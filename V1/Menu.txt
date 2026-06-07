@@ -1,0 +1,4 @@
+Dish: Kolija Singara  Price: 20.0 BDT
+Dish: Dim Puri  Price: 30.0 BDT
+Dish: Lemonade  Price: 50.0 BDT
+
